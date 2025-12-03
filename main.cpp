@@ -5,6 +5,8 @@
 #include <cmath>
 #include <string>
 #include <cassert>
+#include <limits>
+#include <ctime>
 using namespace std;
 
 
@@ -22,6 +24,10 @@ ChannelYoutube channels[MAX];
 int realSize = 0;
 
 //utility
+void cinClear(){
+    cin.clear();
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+}
 void swap(ChannelYoutube &a, ChannelYoutube &b){
     ChannelYoutube temp = a;
     a = b;
@@ -38,16 +44,31 @@ void showError(string message){
 
 void loadFile(){
     ifstream file("youtube.txt");
+    
     if(!file){
         showError("File youtube.txt tidak ditemukan");
         exit(-1);
     }
     string line;
-    for(int i = 0; i < MAX && getline(cin, line); i++){
+    for(int i = 0; i < MAX && getline(file, line); i++){
         stringstream ss(line);
+        
         ss >> channels[i].id >> channels[i].nama >> channels[i].negara >> channels[i].jumlahVideo >> channels[i].jumlahPenonton >> channels[i].jumlahLike;
         realSize++;
     }
+    file.close();
+}
+
+void updateFile(){
+    ofstream file("youtube.txt");
+    if(!file){
+        showError("File youtube.txt tidak ditemukan");
+        exit(-1);
+    }
+    for(int i = 0; i < realSize; i++){
+        file << to_string(channels[i].id) << " " << channels[i].nama << " " << channels[i].negara << " " << to_string(channels[i].jumlahVideo) << " " << to_string(channels[i].jumlahPenonton) << " " << to_string(channels[i].jumlahLike) << endl;
+    }
+    file.close();
 }
 
 int searchById(int target, int first = 0, int last = realSize){
@@ -64,6 +85,7 @@ int searchById(int target, int first = 0, int last = realSize){
     }
 }
 
+
 // Channel
 void lihatChannel(bool showAll = true, int index = -1){
     assert(!(!showAll && index == -1));
@@ -77,7 +99,9 @@ void lihatChannel(bool showAll = true, int index = -1){
     }
 }
 
+
 void tambahChannel(){
+    cinClear();
     if(realSize >= MAX) {
         cout << "Jumlah saluran penuh" << endl;
         return;
@@ -91,7 +115,6 @@ void tambahChannel(){
     int jumlahLike;
 
     cout << "Masukkan nama saluran: ";
-    cin.ignore();
     getline(cin, nama);
     cout << "Masukkan negara saluran: ";
     getline(cin, negara);
@@ -115,12 +138,27 @@ void tambahChannel(){
             swap(channels[i], channels[i-1]);
         }
     }
+    updateFile();
+}
+
+void hapusChannel(int index){
+    ofstream file("youtube.txt");
+    if(!file){
+        showError("File youtube.txt tidak ditemukan");
+        exit(-1);
+    }
+    for(int i = 0; i < realSize; i++){
+        if(i == index) continue;
+        file << to_string(channels[i].id) << " " << channels[i].nama << " " << channels[i].negara << " " << to_string(channels[i].jumlahVideo) << " " << to_string(channels[i].jumlahPenonton) << " " << to_string(channels[i].jumlahLike) << endl;
+    }
+    file.close();
+    loadFile();
 }
 
 void menuCariChannel(){
     int idTarget;
     cout << "===== CARI SALURAN YOUTUBE =====" << endl;
-    cout << "Masukkan ID: " << endl;
+    cout << "Masukkan ID: ";
     cin >> idTarget;
     int index = searchById(idTarget);
     if(index == -1){
@@ -130,12 +168,26 @@ void menuCariChannel(){
     lihatChannel(false, index);
 }
 
+void menuHapusChannel(){
+    int idTarget;
+    cout << "==== HAPUS SALURAN YOUTUBE ====" << endl;
+    cout << "Masukkan ID: ";
+    cin >> idTarget;
+    int index = searchById(idTarget);
+    if(index == -1){
+        showError("ID tidak ditemukan");
+        return;
+    } 
+    hapusChannel(index);
+}
+
 int tampilkanMenu(){
     int pilihan;
     cout << "=====MANAJEMEN SALURAN YOUTUBE=====" << endl;
     cout << "[1] Lihat Saluran" << endl;
     cout << "[2] Tambahkan Saluran" << endl;
     cout << "[3] Cari saluran berdasarkan ID" << endl;
+    cout << "[5] Hapus Saluran" << endl;
     cout << "[0] Berhenti" << endl << endl;
     cout << "pilihan: ";
     cin >> pilihan;
@@ -145,6 +197,7 @@ int tampilkanMenu(){
 }
 
 int main(){
+    srand(time(0));
     int pilihan = 0;
 
     loadFile();
@@ -162,6 +215,10 @@ int main(){
             }
             case 3: {
                 menuCariChannel();
+                break;
+            }
+            case 5: {
+                menuHapusChannel();
                 break;
             }
             case 0: {
