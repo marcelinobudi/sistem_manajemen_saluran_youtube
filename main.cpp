@@ -89,14 +89,20 @@ int searchById(int target, int first = 0, int last = realSize){
 // Channel
 void lihatChannel(bool showAll = true, int index = -1){
     assert(!(!showAll && index == -1));
+    cout << endl;
+    cout << "ID | Nama | Negara | Jumlah Video | Jumlah Penonton | Jumlah Like" << endl;
     if(showAll)
     {
+        if(realSize == 0){
+            cout << "Tidak ada channel" << endl;
+        }
         for(int i = 0; i < realSize; i++){
             cout << channels[i].id << " | " << channels[i].nama << " | " << channels[i].negara << " | " << channels[i].jumlahVideo << " | " << channels[i].jumlahPenonton << " | " << channels[i].jumlahLike << endl;
         }
     } else{
         cout << channels[index].id << " | " << channels[index].nama << " | " << channels[index].negara << " | " << channels[index].jumlahVideo << " | " << channels[index].jumlahPenonton << " | " << channels[index].jumlahLike << endl;
     }
+    cout << endl;
 }
 
 
@@ -181,6 +187,81 @@ void menuHapusChannel(){
     hapusChannel(index);
 }
 
+void analisisStatistik(
+    double &rataVideo, double &rataPenonton, double &rataLike, 
+    int &minVideo,int &minPenonton, int &minLike, 
+    int &maxVideo,int &maxPenonton, int &maxLike 
+){
+    int totalVideo = 0, totalPenonton = 0, totalLike = 0;
+
+    minVideo = channels[0].jumlahVideo;
+    maxVideo = channels[0].jumlahVideo;
+
+    minPenonton = channels[0].jumlahPenonton;
+    maxPenonton = channels[0].jumlahPenonton;
+
+    minLike = channels[0].jumlahLike;
+    maxLike = channels[0].jumlahLike;
+
+    for(int i = 0; i < realSize; i++){
+        // akumulasi total
+        totalVideo += channels[i].jumlahVideo;
+        totalPenonton += channels[i].jumlahPenonton;
+        totalLike += channels[i].jumlahLike;
+
+        // min / max video
+        if(channels[i].jumlahVideo < minVideo) minVideo = channels[i].jumlahVideo;
+        if(channels[i].jumlahVideo > maxVideo) maxVideo = channels[i].jumlahVideo;
+
+        // min / max penonton
+        if(channels[i].jumlahPenonton < minPenonton) minPenonton = channels[i].jumlahPenonton;
+        if(channels[i].jumlahPenonton > maxPenonton) maxPenonton = channels[i].jumlahPenonton;
+
+        // min / max like
+        if(channels[i].jumlahLike < minLike) minLike = channels[i].jumlahLike;
+        if(channels[i].jumlahLike > maxLike) maxLike = channels[i].jumlahLike;
+    }
+
+    rataVideo = (double)totalVideo / realSize;
+    rataPenonton = (double)totalPenonton / realSize;
+    rataLike = (double)totalLike / realSize;
+}
+
+void menuStatistikSaluran(){
+    if(realSize == 0){
+        showError("Belum ada data saluran.");
+        return;
+    }
+
+    double rataVideo, rataPenonton, rataLike;
+    int minVideo, minPenonton, minLike;
+    int maxVideo, maxPenonton, maxLike;
+
+    analisisStatistik(
+        rataVideo, rataPenonton, rataLike,
+        minVideo, minPenonton, minLike,
+        maxVideo, maxPenonton, maxLike
+    );
+
+    cout << "===== STATISTIK SALURAN YOUTUBE =====" << endl;
+    cout << "Jumlah saluran: " << realSize << endl << endl;
+
+    cout << "Jumlah Video" << endl;
+    cout << "  Rata-rata : " << rataVideo << endl;
+    cout << "  Minimum   : " << minVideo << endl;
+    cout << "  Maksimum  : " << maxVideo << endl << endl;
+
+    cout << "Jumlah Penonton" << endl;
+    cout << "  Rata-rata : " << rataPenonton << endl;
+    cout << "  Minimum   : " << minPenonton << endl;
+    cout << "  Maksimum  : " << maxPenonton << endl << endl;
+
+    cout << "Jumlah Like" << endl;
+    cout << "  Rata-rata : " << rataLike << endl;
+    cout << "  Minimum   : " << minLike << endl;
+    cout << "  Maksimum  : " << maxLike << endl << endl;
+}
+
 int tampilkanMenu(){
     int pilihan;
     cout << "=====MANAJEMEN SALURAN YOUTUBE=====" << endl;
@@ -218,10 +299,23 @@ int main(){
                 break;
             }
             case 3: {
-                menuCariChannel();
+                menuStatistikSaluran();
+                break;
+            }
+            case 4: {
+                
                 break;
             }
             case 5: {
+                
+                break;
+            }case 6: {
+                
+                break;
+            }case 7: {
+                
+                break;
+            }case 8: {
                 menuHapusChannel();
                 break;
             }
