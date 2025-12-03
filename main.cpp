@@ -58,7 +58,7 @@ void lihatChannel(bool showAll = true, int index = -1){
             cout << channels[i].nama << endl;
         }
     } else{
-        cout << channels[index].nama << " | " << channels[index].negara << " | " << channels[index].jumlahVideo;
+        cout << channels[index].id << " | " << channels[index].nama << " | " << channels[index].negara << " | " << channels[index].jumlahVideo << " | " << channels[index].jumlahPenonton << " | " << channels[index].jumlahLike << endl;
     }
 }
 
