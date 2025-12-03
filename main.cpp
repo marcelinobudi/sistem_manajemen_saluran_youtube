@@ -80,7 +80,7 @@ int searchById(int target, int first = 0, int last = realSize){
         return mid;
     } else if(channels[mid].id < target){
         return searchById(target, mid+1, last);
-    } else if(channels[mid].id > target) {
+    } else {
         return searchById(target, first, mid-1);
     }
 }
