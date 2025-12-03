@@ -87,6 +87,11 @@ int searchById(int target, int first = 0, int last = realSize){
 
 
 // Channel
+void initializeChannel(){
+    ChannelYoutube channels[MAX];
+    realSize = 0;
+    loadFile();
+}
 void lihatChannel(bool showAll = true, int index = -1){
     assert(!(!showAll && index == -1));
     if(showAll)
@@ -114,10 +119,10 @@ void tambahChannel(){
     int jumlahPenonton;
     int jumlahLike;
 
-    cout << "Masukkan nama saluran: ";
-    getline(cin, nama);
+    cout << "Masukkan nama saluran (tanpa spasi): ";
+    cin >> nama;
     cout << "Masukkan negara saluran: ";
-    getline(cin, negara);
+    cin >> negara;
     cout << "Masukkan jumlah video saluran: ";
     cin >> jumlahVideo;
     cout << "Masukkan jumlah penonton saluran: ";
@@ -142,7 +147,7 @@ void tambahChannel(){
 }
 
 void hapusChannel(int index){
-    ofstream file("youtube.txt");
+    ofstream file("youtube.txt", ofstream::out | ofstream::trunc); // untuk menghapus isi file
     if(!file){
         showError("File youtube.txt tidak ditemukan");
         exit(-1);
@@ -152,7 +157,8 @@ void hapusChannel(int index){
         file << to_string(channels[i].id) << " " << channels[i].nama << " " << channels[i].negara << " " << to_string(channels[i].jumlahVideo) << " " << to_string(channels[i].jumlahPenonton) << " " << to_string(channels[i].jumlahLike) << endl;
     }
     file.close();
-    loadFile();
+    initializeChannel();
+    
 }
 
 void menuCariChannel(){
@@ -200,7 +206,8 @@ int main(){
     srand(time(0));
     int pilihan = 0;
 
-    loadFile();
+    initializeChannel();
+
     do {
         pilihan = tampilkanMenu();
         
@@ -219,6 +226,7 @@ int main(){
             }
             case 5: {
                 menuHapusChannel();
+                // goto initializeChannelArray;
                 break;
             }
             case 0: {
