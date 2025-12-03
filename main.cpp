@@ -468,7 +468,7 @@ int main(){
             }
             default: {
                 showError("Pilihan yang dimasukkan tidak tepat.");
-                return 0;
+                break;
             }
         }
         cout << endl;
