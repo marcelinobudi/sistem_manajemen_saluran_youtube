@@ -55,7 +55,7 @@ void lihatChannel(bool showAll = true, int index = -1){
     if(showAll)
     {
         for(int i = 0; i < realSize; i++){
-            cout << channels[i].nama << endl;
+            cout << channels[i].id << " | " << channels[i].nama << " | " << channels[i].negara << " | " << channels[i].jumlahVideo << " | " << channels[i].jumlahPenonton << " | " << channels[i].jumlahLike << endl;
         }
     } else{
         cout << channels[index].id << " | " << channels[index].nama << " | " << channels[index].negara << " | " << channels[index].jumlahVideo << " | " << channels[index].jumlahPenonton << " | " << channels[index].jumlahLike << endl;
@@ -125,13 +125,14 @@ int tampilkanMenu(){
     cout << "pilihan: ";
     cin >> pilihan;
     if(cin.fail())
+        return -1;
     return pilihan;
 }
 
 int main(){
     int pilihan = 0;
     do {
-        tampilkanMenu();
+        pilihan = tampilkanMenu();
         
         switch(pilihan){
             case 1: {
