@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <string>
-#include <cassert>
 #include <limits>
 #include <ctime>
 using namespace std;
@@ -91,8 +90,12 @@ void salinArrayChannelYoutube(ChannelYoutube channels[], ChannelYoutube salinan[
     }
 }
 
-
 // Channel
+void initializeChannel() {
+    ChannelYoutube channels[MAX];
+    realSize = 0;
+    loadFile();
+}
 void lihatChannelHeader(){
     cout << "ID | Nama | Negara | Jumlah Video | Jumlah Penonton | Jumlah Like" << endl;
 }
@@ -160,7 +163,7 @@ void tambahChannel(){
 }
 
 void hapusChannel(int index){
-    ofstream file("youtube.txt");
+    ofstream file("youtube.txt", ofstream::out | ofstream::trunc); // untuk menghapus isi file
     if(!file){
         showError("File youtube.txt tidak ditemukan");
         exit(-1);
@@ -170,7 +173,8 @@ void hapusChannel(int index){
         file << to_string(channels[i].id) << " " << channels[i].nama << " " << channels[i].negara << " " << to_string(channels[i].jumlahVideo) << " " << to_string(channels[i].jumlahPenonton) << " " << to_string(channels[i].jumlahLike) << endl;
     }
     file.close();
-    loadFile();
+    initializeChannel();
+    
 }
 
 void searchByCountry(string negara){
@@ -414,9 +418,9 @@ int tampilkanMenu(){
 
 int main(){
     srand(time(0));
-    int pilihan = 0;
+    initializeChannel();
 
-    loadFile();
+    int pilihan = 0;
     do {
         pilihan = tampilkanMenu();
         cout << endl;
