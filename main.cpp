@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
-#include <cmath>
 #include <string>
 #include <limits>
 #include <ctime>
@@ -70,19 +69,7 @@ void updateFile(){
     file.close();
 }
 
-int searchById(int target, int first = 0, int last = realSize){
-    int mid = (first+last)/2;
-    if(first > last){
-        return -1;
-    }
-    if(channels[mid].id == target){
-        return mid;
-    } else if(channels[mid].id < target){
-        return searchById(target, mid+1, last);
-    } else {
-        return searchById(target, first, mid-1);
-    }
-}
+
 
 void salinArrayChannelYoutube(ChannelYoutube channels[], ChannelYoutube salinan[]){
     for (int i = 0; i < realSize; i++){
@@ -136,9 +123,15 @@ void tambahChannel(){
     int jumlahLike;
 
     cout << "Masukkan nama saluran (tanpa spasi): ";
-    cin >> nama;
+    getline(cin, nama);
+    stringstream ss1(nama); 
+    ss1 >> nama;// supaya hanya mengambil kata pertama jika pengguna memasukan spasi
+    ss1.clear();
     cout << "Masukkan negara saluran (tanpa spasi): ";
-    cin >> negara;
+    getline(cin, negara);
+    stringstream ss2(negara); // supaya hanya mengambil kata pertama jika pengguna memasukan spasi
+    ss2 >> negara;
+    ss2.clear(); 
     cout << "Masukkan jumlah video saluran: ";
     cin >> jumlahVideo;
     cout << "Masukkan jumlah penonton saluran: ";
@@ -175,6 +168,21 @@ void hapusChannel(int index){
     file.close();
     initializeChannel();
     
+}
+
+// PENCARIAN
+int searchById(int target, int first = 0, int last = realSize){
+    int mid = (first+last)/2;
+    if(first > last){
+        return -1;
+    }
+    if(channels[mid].id == target){
+        return mid;
+    } else if(channels[mid].id < target){
+        return searchById(target, mid+1, last);
+    } else {
+        return searchById(target, first, mid-1);
+    }
 }
 
 void searchByCountry(string negara){
