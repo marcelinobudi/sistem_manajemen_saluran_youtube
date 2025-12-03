@@ -85,26 +85,38 @@ int searchById(int target, int first = 0, int last = realSize){
     }
 }
 
-
-// Channel
-void lihatChannel(bool showAll = true, int index = -1){
-    assert(!(!showAll && index == -1));
-    cout << endl;
-    cout << "ID | Nama | Negara | Jumlah Video | Jumlah Penonton | Jumlah Like" << endl;
-    if(showAll)
-    {
-        if(realSize == 0){
-            cout << "Tidak ada channel" << endl;
-        }
-        for(int i = 0; i < realSize; i++){
-            cout << channels[i].id << " | " << channels[i].nama << " | " << channels[i].negara << " | " << channels[i].jumlahVideo << " | " << channels[i].jumlahPenonton << " | " << channels[i].jumlahLike << endl;
-        }
-    } else{
-        cout << channels[index].id << " | " << channels[index].nama << " | " << channels[index].negara << " | " << channels[index].jumlahVideo << " | " << channels[index].jumlahPenonton << " | " << channels[index].jumlahLike << endl;
+void salinArrayChannelYoutube(ChannelYoutube channels[], ChannelYoutube salinan[]){
+    for (int i = 0; i < realSize; i++){
+        salinan[i] = channels[i];
     }
-    cout << endl;
 }
 
+
+// Channel
+void lihatChannelHeader(){
+    cout << "ID | Nama | Negara | Jumlah Video | Jumlah Penonton | Jumlah Like" << endl;
+}
+void lihatChannel(){
+    if(realSize == 0){
+        cout << "Tidak ada channel" << endl;
+    }
+    for(int i = 0; i < realSize; i++){
+        cout << channels[i].id << " | " << channels[i].nama << " | " << channels[i].negara << " | " << channels[i].jumlahVideo << " | " << channels[i].jumlahPenonton << " | " << channels[i].jumlahLike << endl;
+    }
+
+}
+void lihatChannel(int index){
+    cout << channels[index].id << " | " << channels[index].nama << " | " << channels[index].negara << " | " << channels[index].jumlahVideo << " | " << channels[index].jumlahPenonton << " | " << channels[index].jumlahLike << endl;
+}
+
+void lihatChannel(ChannelYoutube arr[], int N){
+    if(realSize == 0){
+        cout << "Tidak ada channel" << endl;
+    }
+    for(int i = 0; i < N; i++){
+        cout << arr[i].id << " | " << arr[i].nama << " | " << arr[i].negara << " | " << arr[i].jumlahVideo << " | " << arr[i].jumlahPenonton << " | " << arr[i].jumlahLike << endl;
+    }
+}
 
 void tambahChannel(){
     cinClear();
@@ -120,10 +132,10 @@ void tambahChannel(){
     int jumlahPenonton;
     int jumlahLike;
 
-    cout << "Masukkan nama saluran: ";
-    getline(cin, nama);
-    cout << "Masukkan negara saluran: ";
-    getline(cin, negara);
+    cout << "Masukkan nama saluran (tanpa spasi): ";
+    cin >> nama;
+    cout << "Masukkan negara saluran (tanpa spasi): ";
+    cin >> negara;
     cout << "Masukkan jumlah video saluran: ";
     cin >> jumlahVideo;
     cout << "Masukkan jumlah penonton saluran: ";
@@ -161,17 +173,135 @@ void hapusChannel(int index){
     loadFile();
 }
 
-void menuCariChannel(){
+void searchByCountry(string negara){
+    lihatChannelHeader();
+    for (int i = 0; i < realSize; i++){
+        if (channels[i].negara==negara){
+            lihatChannel(i);
+        }
+    }
+}
+
+void menuCariChannelBerdasarkanID(){
     int idTarget;
     cout << "===== CARI SALURAN YOUTUBE =====" << endl;
     cout << "Masukkan ID: ";
     cin >> idTarget;
+    if(cin.fail()){
+        cinClear();
+    }
     int index = searchById(idTarget);
     if(index == -1){
         showError("ID tidak ditemukan");
         return;
     } 
-    lihatChannel(false, index);
+    lihatChannel(index);
+}
+
+void menuCariChannelBerdasarkanNegara(){
+    string negara;
+    cout << "===== CARI SALURAN YOUTUBE =====" << endl;
+    cout << "Masukkan negara: ";
+    cin >> negara;
+    if(cin.fail()){
+        cinClear();
+    }
+    searchByCountry(negara);
+}
+
+
+void menuUrutanBerdasarkanJumlahPenonton(){
+    int opsi;
+    ChannelYoutube salinan[MAX];
+    salinArrayChannelYoutube(channels, salinan);
+    cout << "===== URUTKAN =====" << endl;
+    cout<<"[1] Urutkan Berdasarkan Penonton Terbanyak"<<endl;
+    cout<<"[2] Urutkan Berdasarkan Penonton Tersedikit"<<endl;
+    cout<<"pilihan: ";
+    cin>>opsi;
+    cout << endl;
+
+    if(cin.fail() || realSize <= 0){
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout<<"Input tidak Valid"<<endl;
+        return;
+    }
+    
+    switch (opsi){
+        case 1:{
+            // Insertion Sort
+            for(int i = 0; i < realSize-1;i++){
+                for(int j = i+1; j > 0; j--){
+                    if(salinan[j].jumlahPenonton > salinan[j-1].jumlahPenonton){
+                        swap(salinan[j], salinan[j-1]);
+                    }
+                }
+            }
+            break;
+        }
+        case 2:{
+            // Insertion Sort
+            for(int i = 0; i < realSize-1;i++){
+                for(int j = i+1; j > 0; j--){
+                    if(salinan[j].jumlahPenonton < salinan[j-1].jumlahPenonton){
+                        swap(salinan[j], salinan[j-1]);
+                    }
+                }
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    lihatChannelHeader();
+    lihatChannel(salinan, realSize);
+}
+
+void menuUrutanBerdasarkanJumlahLike(){
+    int opsi;
+    ChannelYoutube salinan[MAX];
+    salinArrayChannelYoutube(channels, salinan);
+    cout << "===== URUTKAN =====" << endl;
+    cout<<"[1] Urutkan Berdasarkan Like Terbanyak"<<endl;
+    cout<<"[2] Urutkan Berdasarkan Like Tersedikit"<<endl;
+    cout<<"pilihan: ";
+    cin>>opsi;
+    cout << endl;
+    if(cin.fail() || realSize <= 0){
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout<<"Input tidak Valid"<<endl;
+        return;
+    }
+    
+    switch (opsi){
+        case 1:
+            // Insertion Sort
+            for(int i = 0; i < realSize-1;i++){
+                for(int j = i+1; j > 0; j--){
+                    if(salinan[j].jumlahLike > salinan[j-1].jumlahLike){
+                        swap(salinan[j], salinan[j-1]);
+                    }
+                }
+            }
+        break;
+        case 2:
+            // Insertion Sort
+            for(int i = 0; i < realSize-1;i++){
+                for(int j = i+1; j > 0; j--){
+                    if(salinan[j].jumlahLike < salinan[j-1].jumlahLike){
+                        swap(salinan[j], salinan[j-1]);
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+
+    }
+    lihatChannelHeader();
+    lihatChannel(salinan, realSize);
 }
 
 void menuHapusChannel(){
@@ -278,6 +408,7 @@ int tampilkanMenu(){
     cin >> pilihan;
     if(cin.fail())
         return -1;
+    cout << endl;
     return pilihan;
 }
 
@@ -288,9 +419,10 @@ int main(){
     loadFile();
     do {
         pilihan = tampilkanMenu();
-        
+        cout << endl;
         switch(pilihan){
             case 1: {
+                lihatChannelHeader();
                 lihatChannel();
                 break;
             }
@@ -303,17 +435,17 @@ int main(){
                 break;
             }
             case 4: {
-                
+                menuCariChannelBerdasarkanID();
                 break;
             }
             case 5: {
-                
+                menuCariChannelBerdasarkanNegara();
                 break;
             }case 6: {
-                
+                menuUrutanBerdasarkanJumlahPenonton();
                 break;
             }case 7: {
-                
+                menuUrutanBerdasarkanJumlahLike();
                 break;
             }case 8: {
                 menuHapusChannel();
@@ -327,5 +459,6 @@ int main(){
                 return 0;
             }
         }
+        cout << endl;
     } while(pilihan != 0);
 }
