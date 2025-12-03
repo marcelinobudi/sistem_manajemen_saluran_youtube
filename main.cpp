@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <cmath>
 #include <string>
@@ -33,6 +34,20 @@ int createId(){
 
 void showError(string message){
     cout << "[ERROR] " << message << endl;
+}
+
+void loadFile(){
+    ifstream file("youtube.txt");
+    if(!file){
+        showError("File youtube.txt tidak ditemukan");
+        exit(-1);
+    }
+    string line;
+    for(int i = 0; i < MAX && getline(cin, line); i++){
+        stringstream ss(line);
+        ss >> channels[i].id >> channels[i].nama >> channels[i].negara >> channels[i].jumlahVideo >> channels[i].jumlahPenonton >> channels[i].jumlahLike;
+        realSize++;
+    }
 }
 
 int searchById(int target, int first = 0, int last = realSize){
@@ -131,6 +146,8 @@ int tampilkanMenu(){
 
 int main(){
     int pilihan = 0;
+
+    loadFile();
     do {
         pilihan = tampilkanMenu();
         
