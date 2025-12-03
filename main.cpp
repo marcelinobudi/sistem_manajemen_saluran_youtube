@@ -186,8 +186,12 @@ int tampilkanMenu(){
     cout << "=====MANAJEMEN SALURAN YOUTUBE=====" << endl;
     cout << "[1] Lihat Saluran" << endl;
     cout << "[2] Tambahkan Saluran" << endl;
-    cout << "[3] Cari saluran berdasarkan ID" << endl;
-    cout << "[5] Hapus Saluran" << endl;
+    cout << "[3] Lihat statistik saluran" << endl;
+    cout << "[4] Cari saluran berdasarkan ID" << endl;
+    cout << "[5] Cari saluran berdasarkan Negara" << endl;
+    cout << "[6] Lihat Urutan Berdasarkan Jumlah Penonton"<< endl;
+    cout << "[7] Lihat Urutan Berdasarkan Jumlah Like"<< endl;
+    cout << "[8] Hapus Saluran" << endl;
     cout << "[0] Berhenti" << endl << endl;
     cout << "pilihan: ";
     cin >> pilihan;
